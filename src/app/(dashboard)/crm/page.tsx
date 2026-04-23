@@ -724,7 +724,7 @@ function IndiaMARTTab() {
 
   // Disconnect mutation
   const disconnectMutation = useMutation({
-    mutationFn: () => api.post("/crm/indiamart/disconnect"),
+    mutationFn: () => api.post("/crm/indiamart/disconnect", {}),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["crm", "indiamart"] });
       toast.success("IndiaMART disconnected");
@@ -734,7 +734,7 @@ function IndiaMARTTab() {
 
   // Manual sync mutation
   const syncMutation = useMutation({
-    mutationFn: () => api.post("/crm/indiamart/sync"),
+    mutationFn: () => api.post("/crm/indiamart/sync", {}),
     onSuccess: (res: any) => {
       qc.invalidateQueries({ queryKey: ["crm"] });
       toast.success(res.message || `Synced ${res.imported} new leads`);

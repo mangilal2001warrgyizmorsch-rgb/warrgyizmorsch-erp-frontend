@@ -18,11 +18,11 @@ export const ROLE_MODULE_ACCESS: Record<string, string[]> = {
 };
 
 export function useUserRole() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const role = user?.role || "readonly";
   const allowedModules = ROLE_MODULE_ACCESS[role] || ["*"];
   const hasAccess = (path: string) => allowedModules.includes("*") || allowedModules.some(m => path.startsWith(m));
   const isAdmin = role === "admin";
 
-  return { role, hasAccess, isAdmin, user };
+  return { role, hasAccess, isAdmin, user, isLoading };
 }
