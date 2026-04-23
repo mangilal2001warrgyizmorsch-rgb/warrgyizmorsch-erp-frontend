@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ImportDialog } from "@/components/ui/import-dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -442,6 +443,7 @@ export default function PurchasePage() {
   const [rfqSearch, setRfqSearch] = useState("");
   const [orderFilter, setOrderFilter] = useState("all");
   const [rfqFilter, setRfqFilter] = useState("all");
+  const [showImport, setShowImport] = useState(false);
   const [showPOForm, setShowPOForm] = useState(false);
   const [showVendorForm, setShowVendorForm] = useState(false);
   const [showRFQForm, setShowRFQForm] = useState(false);
@@ -494,11 +496,6 @@ export default function PurchasePage() {
     },
     onError: (err: any) => toast.error(err.message || "Import failed"),
   });
-
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) importMutation.mutate(file);
-  };
 
   const handleDownloadPO = (orderId: string, orderNumber: string) => {
     const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5500/api'}/purchase/orders/${orderId}/pdf`;
@@ -638,11 +635,20 @@ export default function PurchasePage() {
                 <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                 <Input placeholder="Search POs..." className="pl-8 h-8 text-xs w-48 rounded-full bg-muted/30" value={orderSearch} onChange={(e) => setOrderSearch(e.target.value)} />
               </div>
-              <Button variant="outline" size="sm" className="h-8 rounded-full relative cursor-pointer" disabled={importMutation.isPending}>
+              <Button variant="outline" size="sm" className="h-8 rounded-full relative cursor-pointer" onClick={() => setShowImport(true)}>
                 <Upload size={14} className="mr-2" />
-                {importMutation.isPending ? "..." : "Import"}
-                <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept=".csv,.xlsx" onChange={handleFileUpload} />
+                Import
               </Button>
+              <ImportDialog
+                title="Import Purchase Orders"
+                entityName="Purchase Orders"
+                requiredColumns={["vendor", "date", "status", "totalAmount", "notes"]}
+                templateData="Global Supplies Inc,2023-10-27,draft,25000,Standard restock"
+                open={showImport}
+                onOpenChange={setShowImport}
+                onImport={(file) => importMutation.mutate(file)}
+                isPending={importMutation.isPending}
+              />
               <Dialog open={showPOForm} onOpenChange={setShowPOForm}>
                 <DialogTrigger asChild>
                   <Button size="sm" className="cursor-pointer gap-1 h-8 rounded-full px-4"><Plus size={14} /> New PO</Button>

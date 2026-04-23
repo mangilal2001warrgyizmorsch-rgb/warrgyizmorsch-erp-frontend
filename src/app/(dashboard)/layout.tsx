@@ -49,14 +49,15 @@ const NAV_ITEMS = [
   { label: "Manufacturing", href: "/manufacturing", icon: Factory },
   { label: "Shop Floor", href: "/shopfloor", icon: HardHat },
   { label: "Quality", href: "/quality", icon: ClipboardCheck },
+  { label: "Challan", href: "/Challan", icon: ClipboardList },
   { label: "Delivery", href: "/delivery", icon: Truck },
   { label: "Finance", href: "/finance", icon: CircleDollarSign },
   { label: "HR", href: "/hr", icon: Users },
   { label: "Automations", href: "/automations", icon: Zap },
   { label: "Reports", href: "/reports", icon: BarChart3 },
   { label: "Integrations", href: "/integrations", icon: Plug },
-  { label: "Settings", href: "/settings", icon: Settings, isFooter: true },
   { label: "Admin", href: "/admin", icon: Shield, isFooter: true },
+  { label: "Settings", href: "/settings", icon: Settings, isFooter: true },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {

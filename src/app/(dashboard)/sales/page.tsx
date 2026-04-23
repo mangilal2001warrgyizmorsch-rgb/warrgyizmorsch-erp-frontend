@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ImportDialog } from "@/components/ui/import-dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -321,6 +322,7 @@ function SalesOrdersTab() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showNew, setShowNew] = useState(false);
+  const [showImport, setShowImport] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
   
   const qc = useQueryClient();
@@ -386,11 +388,20 @@ function SalesOrdersTab() {
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <Input placeholder="Search orders..." className="pl-8 h-8 text-xs w-48 rounded-full bg-muted/30" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
-          <Button variant="outline" size="sm" className="h-8 rounded-full relative cursor-pointer" disabled={importMutation.isPending}>
+          <Button variant="outline" size="sm" className="h-8 rounded-full relative cursor-pointer" onClick={() => setShowImport(true)}>
             <Upload size={14} className="mr-2" />
-            {importMutation.isPending ? "..." : "Import"}
-            <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept=".csv,.xlsx" onChange={handleFileUpload} />
+            Import
           </Button>
+          <ImportDialog
+            title="Import Sales Orders"
+            entityName="Sales Orders"
+            requiredColumns={["customer", "date", "status", "totalAmount", "notes"]}
+            templateData="Acme Corp,2023-10-27,draft,15000,Standard order"
+            open={showImport}
+            onOpenChange={setShowImport}
+            onImport={(file) => importMutation.mutate(file)}
+            isPending={importMutation.isPending}
+          />
           <Dialog open={showNew} onOpenChange={setShowNew}>
             <DialogTrigger asChild>
               <Button size="sm" className="cursor-pointer gap-1 h-8 rounded-full px-4"><Plus size={14} /> New Order</Button>
